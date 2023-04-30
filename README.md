@@ -10,11 +10,11 @@ https://github.com/nunores/Tablet-PC-Tool-for-Handwriting-Recognition
 
 ### 2. Extract boost libraries
 
-The boost libraries () should be placed inside seshat. The project should have the following structure:
+The boost libraries (https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/) should be placed inside seshat. The project should have the following structure:
 
 ├── Express-Server
 ├── seshat
-│ ├── boost_1_82_0
+│   ├── boost_1_82_0
 ├── whiteboard
 ├── README.md
 
