@@ -1,7 +1,7 @@
 APP=seshat
 CC=g++
 LINK=-lxerces-c -lm
-FLAGS = -O3 -Wno-unused-result -fpermissive -I/opt/xerces-c/include -L/opt/xerces-c/lib -I./boost_1_81_0
+FLAGS = -O3 -Wno-unused-result -fpermissive -I/opt/xerces-c/include -L/opt/xerces-c/lib -I./boost_1_82_0
 # should remove -g and add -03 whenever not debugging
 
 OBJFEAS=symfeatures.o featureson.o online.o
