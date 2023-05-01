@@ -2,37 +2,47 @@
 
 ## Installation
 
-### 1. Clone the repository:
+### Ubuntu
+
+These instuctions assume the usage of the Ubuntu distribution and that __npm is installed__. 
+
+#### 1. Clone the repository:
 
 ```bash
-https://github.com/nunores/Tablet-PC-Tool-for-Handwriting-Recognition
+git clone https://github.com/nunores/Tablet-PC-Tool-for-Handwriting-Recognition
+cd Tablet-PC-Tool-for-Handwriting-Recognition
 ```
 
-### 2. Extract boost libraries
+#### 2. Execute script
 
-The [boost libraries](https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/) should be placed inside seshat so that the path is:
-
-*seshat/boost_1_82_0*
-
-### 3. Compile seshat
+Give [install.sh](./install.sh) permission for executions with the command:
 
 ```bash
-cd seshat
-make
+chmod +x install.sh 
 ```
 
-### 4. Terminal nº1
+Then, run [install.sh](./install.sh) with the command:
+
+```bash
+sh install.sh 
+```
+
+#### 4. Whiteboard terminal
 
 ```bash
 cd whiteboard
+sudo npm ci
 npm run start:prod
 ```
 
-### 5. Terminal nº2
+#### 5. Express-Server terminal
 
 ```bash
 cd Express-Server
+sudo npm install
 npm run prod
 ```
 
-#### 6. Open localhost:8080
+##### 6. Open localhost:8080
+
+To restart the environment, terminate both processes with Ctrl-C and rerun the previous commands.
