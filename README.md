@@ -27,7 +27,7 @@ Then, run [install.sh](./install.sh) with the command:
 sh install.sh 
 ```
 
-#### 4. Whiteboard terminal
+#### 3. Whiteboard terminal
 
 ```bash
 cd whiteboard
@@ -35,7 +35,7 @@ sudo npm ci
 npm run start:prod
 ```
 
-#### 5. Express-Server terminal
+#### 4. Express-Server terminal
 
 ```bash
 cd Express-Server
@@ -43,6 +43,6 @@ sudo npm install
 npm run prod
 ```
 
-##### 6. Open localhost:8080
+##### 5. Open localhost:8080
 
 To restart the environment, terminate both processes with Ctrl-C and rerun the previous commands.
