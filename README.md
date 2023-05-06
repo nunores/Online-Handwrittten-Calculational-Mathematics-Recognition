@@ -46,3 +46,5 @@ npm run prod
 ##### 5. Open localhost:8080
 
 To restart the environment, terminate both processes with Ctrl-C and rerun the previous commands.
+
+TODO: out folder
