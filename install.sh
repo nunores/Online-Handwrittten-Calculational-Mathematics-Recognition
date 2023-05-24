@@ -13,6 +13,7 @@ rm boost_1_82_0.7z
 cd seshat
 
 mkdir temp
+mkdir out
 
 make
 
