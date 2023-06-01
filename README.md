@@ -4,7 +4,7 @@
 
 ### Ubuntu
 
-These instuctions assume the usage of the Ubuntu distribution and that __npm is installed__. 
+These instuctions assume the usage of the Ubuntu distribution and that npm is installed. 
 
 #### 1. Clone the repository:
 
