@@ -833,6 +833,14 @@ const whiteboard = {
         _this.ctx.stroke();
         _this.ctx.closePath();
         _this.ctx.globalCompositeOperation = _this.oldGCO;
+
+        clearTimeout(_this.timeoutId);
+
+        // Timeout to prevent too many calls
+        _this.timeoutId = setTimeout(() => {
+            _this.calculateStrokesArray();
+            _this.refreshRecognition();
+        }, SESHAT_TIMEOUT);
     },
     drawRec: function (fromX, fromY, toX, toY, color, thickness, remote) {
         var _this = this;
@@ -1353,55 +1361,9 @@ const whiteboard = {
     },
     //Converts draw buffer data into arrays of x and y coordinates for each stroke and adds them to strokesArray
     calculateStrokesArray: function () {
-        let _this = this;
-        _this.strokesArray = [];
-
-        // If drawBuffer is empty, show empty in result and skip this whole function
-        if (_this.drawBuffer.length !== 0) {
-            console.log("DRAWBUFFER: ", _this.drawBuffer);
-
-            let tempDrawId = _this.drawBuffer[0]["drawId"];
-            let tempSet = new Set();
-            let tempArray = [];
-
-            _this.drawBuffer.forEach((element) => {
-                let arrayStrokes = element["d"];
-                if (tempDrawId !== element["drawId"]) {
-                    // New stroke
-                    tempSet.forEach((coordinates) => {
-                        const numbers = coordinates.split(",").map(Number);
-                        tempArray.push(...numbers);
-                    });
-
-                    _this.strokesArray.push(tempArray);
-
-                    tempSet = new Set();
-                    tempArray = [];
-                    tempDrawId = element["drawId"];
-
-                    for (let index = 0; index < arrayStrokes.length; index += 2) {
-                        const x = arrayStrokes[index];
-                        const y = arrayStrokes[index + 1];
-                        tempSet.add([x, y].join(","));
-                    }
-                } else {
-                    for (let index = 0; index < arrayStrokes.length; index += 2) {
-                        const x = arrayStrokes[index];
-                        const y = arrayStrokes[index + 1];
-                        tempSet.add([x, y].join(","));
-                    }
-                }
-            });
-
-            tempSet.forEach((coordinates) => {
-                const numbers = coordinates.split(",").map(Number);
-                tempArray.push(...numbers);
-            });
-
-            _this.strokesArray.push(tempArray);
-
-            console.log("STROKESARRAY: ", _this.strokesArray);
-        }
+        const { eraserPoints, strokesMap } = processDrawBuffer(this.drawBuffer);
+        this.strokesArray = generateStrokesArray(eraserPoints, strokesMap);
+        console.log("STROKESARRAY: ", this.strokesArray);
     },
     handleEventsAndData: function (content, isNewData, doneCallback) {
         var _this = this;
@@ -1782,6 +1744,8 @@ const whiteboard = {
 
             console.log("STRING: ", inkmlString);
 
+            $("#texDisplay").html("Loading...");
+
             getRecognition(inkmlString)
                 .then((responseData) => {
                     InfoService.recognitionResult = responseData;
@@ -1825,6 +1789,16 @@ const whiteboard = {
             }, 100);
         }, 0);
     },
+    // calculateThicknessMedian() {
+    //     const sortedDrawBuffer = this.drawBuffer.sort((a, b) => parseFloat(a.th) - parseFloat(b.th));
+    //     const mid = Math.floor(sortedDrawBuffer.length / 2);
+
+    //     if (sortedDrawBuffer.length % 2 === 0) {
+    //       return (parseFloat(sortedDrawBuffer[mid - 1].th) + parseFloat(sortedDrawBuffer[mid].th)) / 2;
+    //     } else {
+    //       return parseFloat(sortedDrawBuffer[mid].th);
+    //     }
+    // }
 };
 
 function lanczosKernel(x) {
@@ -1883,6 +1857,7 @@ function testImage(url, callback, timeout) {
 async function getRecognition(inkmlString) {
     const axios = require("axios");
     InfoService.recognitionResult = "Loading... ";
+
     try {
         let { data: postResponse } = await axios.post("http://localhost:4000/seshat", inkmlString, {
             headers: {
@@ -1938,6 +1913,77 @@ function convertToPositive(strokesArray) {
     });
 
     return positiveCoordinates;
+}
+
+// Calculates the Euclidean distance between two points
+function calculateDistance(point1, point2) {
+    const [x1, y1] = point1;
+    const [x2, y2] = point2;
+    return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+}
+
+/**
+ * Extracts coordinates from an array of strokes.
+ * @param {Array<number>} arrayStrokes - An array of strokes where each pair of numbers represents a point (x, y)
+ * @returns {Array<Array<number>>} An array of coordinates, each represented as an array [x, y]
+ */
+function getCoordinates(arrayStrokes) {
+    let coordinates = [];
+    for (let index = 0; index < arrayStrokes.length; index += 2) {
+        const coordinate = [arrayStrokes[index], arrayStrokes[index + 1]];
+        coordinates.push(coordinate);
+    }
+    return coordinates;
+}
+
+/**
+ * Generates eraser points and a strokes map.
+ * @param {Array<object>} drawBuffer - The drawBuffer containing drawing and erasing operations
+ * @returns {Object} An object containing the eraser points and the strokes map
+ */
+function processDrawBuffer(drawBuffer) {
+    let eraserPoints = [];
+    let strokesMap = new Map();
+
+    drawBuffer.forEach((element) => {
+        const coordinates = getCoordinates(element["d"]);
+
+        if (element["t"] === "eraser") {
+            coordinates.forEach((coordinate) => {
+                eraserPoints.push({ coordinate, thickness: element["th"] });
+            });
+        } else {
+            if (!strokesMap.has(element["drawId"])) {
+                strokesMap.set(element["drawId"], []);
+            }
+            strokesMap.get(element["drawId"]).push(...coordinates);
+        }
+    });
+
+    return { eraserPoints, strokesMap };
+}
+
+/**
+ * Generates the final strokesArray.
+ * @param {Array<object>} eraserPoints - An array of points with a coordinate and a thickness.
+ * @param {Map<string, Array<Array<number>>>} strokesMap - A map of strokes, with drawIds := arrays of coordinates
+ * @returns {Array<Array<number>>} The final array of strokes with erased parts removed
+ */
+function generateStrokesArray(eraserPoints, strokesMap) {
+    const isErased = (coordinate) => {
+        return eraserPoints.some(
+            (eraserPoint) =>
+                calculateDistance(coordinate, eraserPoint.coordinate) <= eraserPoint.thickness
+        );
+    };
+
+    return Array.from(strokesMap.values())
+        .map((stroke) => {
+            let uniqueStroke = Array.from(new Set(stroke.map(JSON.stringify)), JSON.parse);
+            return uniqueStroke.filter((coordinate) => !isErased(coordinate));
+        })
+        .filter((stroke) => stroke.length > 0)
+        .map((stroke) => stroke.flat());
 }
 
 export default whiteboard;

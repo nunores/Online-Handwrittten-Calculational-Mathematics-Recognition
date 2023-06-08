@@ -113,7 +113,15 @@ void Grammar::addTerminal(float pr, char *S, char *T, char *tex)
       int id = sym_rec->keyClase(T);
       if (id >= 0)
       {
-        char inkMLClass = isOperator(tex) ? 'o' : 'i';
+        char inkMLClass = 'i';
+        if (isOperator(tex))
+        {
+          inkMLClass = 'o';
+        }
+        else if (isNumber(tex))
+        {
+          inkMLClass = 'n';
+        }
         (*it)->setClase(id, pr, tex, inkMLClass);
       }
       else
@@ -130,8 +138,16 @@ void Grammar::addTerminal(float pr, char *S, char *T, char *tex)
     int id = sym_rec->keyClase(T);
     if (id >= 0)
     {
-        char inkMlClass = isOperator(tex) ? 'o' : 'i';
-        pt->setClase(id, pr, tex, inkMlClass);
+      char inkMLClass = 'i';
+      if (isOperator(tex))
+      {
+        inkMLClass = 'o';
+      }
+      else if (isNumber(tex))
+      {
+        inkMLClass = 'n';
+      }
+      pt->setClase(id, pr, tex, inkMLClass);
     }
     else
       fprintf(stderr, "ERROR: %s -> %s (id < 0)\n", S, T);
@@ -319,4 +335,22 @@ const char *Grammar::key2str(int k)
 bool Grammar::isOperator(const char *str) const
 {
   return operatorSet.find(str) != operatorSet.end();
+}
+
+bool Grammar::isNumber(const char *str) const
+{
+  if (*str == '-') // Negative numbers
+    ++str;
+  if (!*str)
+    return false;
+
+  // Iterate over string and check all digits
+  while (*str)
+  {
+    if (!std::isdigit(*str))
+      return false;
+    ++str;
+  }
+
+  return true;
 }

@@ -21,7 +21,7 @@
 *.app
 seshat
 
-boost_1_*/
+/boost_1_*
 /hmer_dataset
 /.vscode
 *.pgm

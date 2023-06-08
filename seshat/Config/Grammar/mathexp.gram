@@ -293,11 +293,14 @@ PTERM
 1.00000000 Dot dot .
 0.50000000 OpBin v \vee
 0.50000000 OpBin V \vee
-0.30000000 OpBin n \wedge
-1.00000000 OpBin E \equiv
+0.90000000 OpBin 1 \wedge
 1.00000000 OpUn 7 \neg
 1.00000000 OpBin u \cup
 1.00000000 Sym equal =
+0.70000000 Sym \lt \lt
+0.80000000 Sym \gt \gt
+0.90000000 Sym \leq \leq
+0.80000000 Sym \geq \geq
 
 
 PBIN
