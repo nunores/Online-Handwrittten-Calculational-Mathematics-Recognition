@@ -2,10 +2,6 @@
 
 ## Installation
 
-### Ubuntu
-
-These instuctions assume the usage of the Ubuntu distribution and that npm is installed. 
-
 #### 1. Clone the repository:
 
 ```bash
@@ -13,36 +9,22 @@ git clone https://github.com/nunores/Tablet-PC-Tool-for-Handwriting-Recognition
 cd Tablet-PC-Tool-for-Handwriting-Recognition
 ```
 
-#### 2. Execute script
-
-Give [install.sh](./install.sh) permission for executions with the command:
+#### 2. Build the docker image
 
 ```bash
-chmod +x install.sh 
+docker build -t tabletpctool .
 ```
 
-Then, run [install.sh](./install.sh) with the command:
+#### 3. Run docker
 
 ```bash
-sh install.sh 
+docker run -p 8080:8080 -p 4000:4000 --name tabletpctool tabletpctool
 ```
+##### 4. Terminating or restarting
 
-#### 3. Whiteboard terminal
+If you need to terminate or restart the environment, run 
 
 ```bash
-cd whiteboard
-sudo npm ci
-npm run start:prod
+docker stop tabletpctool
+docker start tabletpctool
 ```
-
-#### 4. Express-Server terminal
-
-```bash
-cd Express-Server
-sudo npm install
-npm run prod
-```
-
-##### 5. Open localhost:8080
-
-If you need to restart the environment, terminate both processes with Ctrl-C and rerun the previous commands.
