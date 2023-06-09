@@ -1,8 +1,15 @@
 # Tablet-PC-Tool-for-Handwriting-Recognition
 
+## Requirements
+
+[Docker](https://docker.com)
+
 ## Installation
 
 #### 1. Clone the repository:
+
+The following instructions all assume the usage of a Linux command bash.
+Please adapt accordingly to your operating system.
 
 ```bash
 git clone https://github.com/nunores/Tablet-PC-Tool-for-Handwriting-Recognition
