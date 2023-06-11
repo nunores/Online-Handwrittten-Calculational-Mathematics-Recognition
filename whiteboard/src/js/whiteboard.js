@@ -1866,7 +1866,7 @@ async function getRecognition(inkmlString) {
         });
 
         const { data: recognitionResult } = await axios.get(
-            "http://localhost:4000/seshat/multiple",
+            "http://localhost:4000/seshat/",
             {
                 params: {
                     lastWrittenNumbers: postResponse,
