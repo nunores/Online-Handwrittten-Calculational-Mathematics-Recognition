@@ -1,4 +1,4 @@
-const { PATH, PROOF_MODE, THRESHOLD } = require("../utils/constants");
+const { PATH, PROOF_MODE } = require("../utils/constants");
 const { writeInkMLFiles, createInkMLObjects } = require("../utils/fileUtils");
 const {
   calculateAverageY,

@@ -6,10 +6,7 @@ const {
   createFileFromInfo,
 } = require("../utils/fileUtils");
 
-const fs = require("fs").promises;
-const path = require("path");
 const util = require("util");
-const xml2js = require("xml2js");
 const { exec } = require("child_process");
 
 class SeshatRecogniser extends AbstractRecogniser {
