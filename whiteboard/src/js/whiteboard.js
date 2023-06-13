@@ -1870,6 +1870,7 @@ async function getRecognition(inkmlString) {
             {
                 params: {
                     lastWrittenNumbers: postResponse,
+                    recogniser: 'seshat',
                 },
             }
         );
