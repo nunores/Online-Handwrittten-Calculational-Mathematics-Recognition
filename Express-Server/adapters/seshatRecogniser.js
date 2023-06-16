@@ -25,8 +25,19 @@ class SeshatRecogniser extends AbstractRecogniser {
       })
     );
 
+    console.log("RESULTS: ", results);
+
+    // Define regex outside the loop
     const regex =
-      /(=|\\lt|\\gt|\\leq|\\geq)_{((\\sum\s*(.*?))|(\\{(.+?)\\})3?)}/;
+      /(=|\\lt|\\gt|\\leq|\\geq)_{((\\sum\s*.*?3)|(\\{(.+?)\\}))}/;
+
+    // Get odd-indexed elements that match with regex
+    const hintMatches = results
+      .filter((_, i) => i % 2 !== 0)
+      .map((result) => regex.exec(result))
+      .filter((match) => match !== null);
+
+    console.log("HINT MATCHES: ", hintMatches);
 
     for (let [index, result] of results.entries()) {
       // Only odd-indexed results matter (the hint)
@@ -37,7 +48,7 @@ class SeshatRecogniser extends AbstractRecogniser {
       if (!match) continue;
 
       let operator = match[1];
-      let hint = match[6] ? match[6].trim() : match[4].replace(/3$/, "").trim();
+      let hint = match[6] ? match[6].trim() : match[4] ? match[4].replace(/3$/, "").trim() : "";
 
       // Build the modified hint and replace
       let modifiedHint = `${operator}\\{${hint}\\}`;
@@ -59,6 +70,7 @@ class SeshatRecogniser extends AbstractRecogniser {
     return results;
   }
 }
+
 
 /**
  * Returns an array of Seshat commands based on an array of last written numbers.
