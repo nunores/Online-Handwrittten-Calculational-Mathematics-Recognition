@@ -11,6 +11,7 @@ const RAD_TO_DEG = 180.0 / Math.PI;
 const DEG_TO_RAD = Math.PI / 180.0;
 const _45_DEG_IN_RAD = 45 * DEG_TO_RAD;
 const SESHAT_TIMEOUT = 1100; // in ms
+const IP = "37.189.30.160";
 
 const whiteboard = {
     canvas: null,
@@ -1859,21 +1860,18 @@ async function getRecognition(inkmlString) {
     InfoService.recognitionResult = "Loading... ";
 
     try {
-        let { data: postResponse } = await axios.post("http://localhost:4000/seshat", inkmlString, {
+        let { data: postResponse } = await axios.post(`http://${IP}:4000/seshat`, inkmlString, {
             headers: {
                 "Content-Type": "text/plain",
             },
         });
 
-        const { data: recognitionResult } = await axios.get(
-            "http://localhost:4000/seshat/",
-            {
-                params: {
-                    lastWrittenNumbers: postResponse,
-                    recogniser: 'seshat',
-                },
-            }
-        );
+        const { data: recognitionResult } = await axios.get(`http://${IP}:4000/seshat`, {
+            params: {
+                lastWrittenNumbers: postResponse,
+                recogniser: "seshat",
+            },
+        });
 
         return recognitionResult;
     } catch (error) {

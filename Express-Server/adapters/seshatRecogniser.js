@@ -29,7 +29,7 @@ class SeshatRecogniser extends AbstractRecogniser {
 
     // Define regex outside the loop
     const regex =
-      /(=|\\lt|\\gt|\\leq|\\geq)_{((\\sum\s*.*?3)|(\\{(.+?)\\}))}/;
+      /(=|\\lt|\\gt|\\leq|\\geq)_{((\\sum\s*(.*?)(3)?)|(\\{(.+?)\\}))}/;
 
     // Get odd-indexed elements that match with regex
     const hintMatches = results
@@ -42,24 +42,32 @@ class SeshatRecogniser extends AbstractRecogniser {
     for (let [index, result] of results.entries()) {
       // Only odd-indexed results matter (the hint)
       if (index % 2 === 0) continue;
-
+    
       let match = regex.exec(result);
-
+    
       if (!match) continue;
-
+    
       let operator = match[1];
-      let hint = match[6] ? match[6].trim() : match[4] ? match[4].replace(/3$/, "").trim() : "";
-
+      let hint = match[4] ? match[4].trim() : match[6] ? match[6].trim() : "";
+    
       // Build the modified hint and replace
-      let modifiedHint = `${operator}\\{${hint}\\}`;
+      let modifiedHint;
+      // check if hint already contains braces
+      if (hint.startsWith('\\{') && hint.endsWith('\\}')) {
+        modifiedHint = `${operator}${hint}`;
+      } else {
+        modifiedHint = `${operator}\\{${hint}\\}`;
+      }
+      
       results[index] = modifiedHint;
     }
+    
 
     results = results.map(
       (result) =>
         result
           .replace(/=_/g, "=") // Remove any underscore
-          .replace(/=\{\\{(.+?)\\}\}/g, "={$1}") // Remove extra braces
+          .replace(/(=|\\lt|\\gt|\\leq|\\geq)\{\\{(.+?)\\}\}/g, "$1{$2}") // Remove extra braces
           .replace(/(_=|_\\lt|_\\gt|_\\leq|_\\geq)/g, (m) => m.slice(1)) // Remove underscore before operators
     );
 
@@ -70,6 +78,7 @@ class SeshatRecogniser extends AbstractRecogniser {
     return results;
   }
 }
+
 
 
 /**

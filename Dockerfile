@@ -26,6 +26,7 @@ RUN wget https://boostorg.jfrog.io/artifactory/main/release/1.82.0/source/boost_
 COPY whiteboard /app/whiteboard
 COPY seshat /app/seshat
 COPY Express-Server /app/Express-Server
+COPY interfaces /app/interfaces
 
 # Set the environment variables
 ENV WHITEBOARD_PORT=8080
@@ -46,8 +47,7 @@ RUN npm ci &
 
 # Build whiteboard and clean up unnecessary dependencies
 WORKDIR /app/whiteboard
-RUN npm ci \
-    && npm run build
+RUN npm ci
 
 # Define the entry point
 CMD ["/app/entrypoint.sh"]

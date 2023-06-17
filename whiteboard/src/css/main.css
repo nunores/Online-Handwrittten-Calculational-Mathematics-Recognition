@@ -19,8 +19,8 @@ body {
 
 #texDisplay {
     position: absolute;
-    top: 3.5em;
-    right: 13em;
+    top: 8em;
+    right: 14em;
 }
 
 span.katex {
@@ -60,13 +60,13 @@ span.katex > math {
 
 @media (min-device-width: 1024px) {
     .btn-group button {
-        font-size: 1.2em;
-        height: 45px;
-        width: 50px;
+        font-size: 2.4em;
+        height: 90px;
+        width: 100px;
     }
 
     .minGroup {
-        width: 25px;
+        width: 50px;
     }
 }
 
