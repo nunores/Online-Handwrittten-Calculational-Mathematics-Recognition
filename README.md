@@ -1,4 +1,10 @@
-# Tablet-PC-Tool-for-Handwriting-Recognition
+# Online Handwrittten Calculational Mathematics Recognition
+
+![Thesis Demonstration](./docs/thesisdemo.png)
+
+This project is consists of the use and extension of an existing online recogniser of handwritten mathematics, [Seshat](https://github.com/nunores/seshat), supporting proofs in the notation used in the Calculational Method. For the frontend, [this whiteboard](https://github.com/nunores/whiteboard) was used as basis. It can be used in a computer or in a tablet PC and it serves as the first step in the development of a software tool that can be applied in educational settings or to validate proofs syntactically and semantically. 
+
+Developed as part of my Master's Thesis in Informatics and and Computing Engineering at Faculdade de Engenharia da Universidade do Porto (FEUP).
 
 ## Requirements
 
